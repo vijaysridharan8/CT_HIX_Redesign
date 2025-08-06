@@ -38,7 +38,7 @@ public class DocumentController {
 
         // Prepare prompt for LLM
         String prompt = "Extract the following fields from this document and return as JSON with the following structure: " +
-                "{\n  'First Name': string,\n  'Last Name': string,\n  'SSN': string,\n  'Income': string,\n  'Deductions': string,\n  'Spouse': { 'First Name': string, 'Last Name': string, 'SSN': string },\n  'Dependents': [ { 'First Name': string, 'Last Name': string, 'SSN': string, 'Relationship': string, 'Age': string } ]\n}" +
+                "{\n  'First Name': string,\n  'Last Name': string,\n  'SSN': string,\n  'Address Line 1': string,\n  'Address Line 2': string,\n  'City': string,\n  'State': string,\n  'Zip': string,\n  'Income': string,\n  'Deductions': string,\n  'Spouse': { 'First Name': string, 'Last Name': string, 'SSN': string },\n  'Dependents': [ { 'First Name': string, 'Last Name': string, 'SSN': string, 'Relationship': string, 'Age': string } ]\n}" +
                 "\nIf any field is missing, leave it blank. Document:\n" + extractedText;
 
         // Call OpenAI API (replace YOUR_OPENAI_API_KEY with your actual key)
