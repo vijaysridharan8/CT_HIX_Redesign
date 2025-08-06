@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import './App.css';
 import { Tabs, Tab, Button, Table, Form, Spinner, Alert, Navbar, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -22,6 +22,10 @@ function App() {
     Dependents: [],
   });
   const [isUploaded, setIsUploaded] = useState(false);
+  const [sessionId, setSessionId] = useState("");
+  const [chatInput, setChatInput] = useState("");
+  const [chatHistory, setChatHistory] = useState([]);
+  const chatEndRef = useRef(null);
 
   const handleFileChange = (event) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -48,6 +52,8 @@ function App() {
       if (response.ok) {
         setUploadMessage('File processed successfully.');
         setIsUploaded(true);
+        const newSessionId = response.headers.get('x-session-id');
+        if (newSessionId) setSessionId(newSessionId);
         try {
           const json = JSON.parse(text);
           setFields(json);
@@ -81,6 +87,38 @@ function App() {
       ...prev,
       Dependents: [...prev.Dependents, { "First Name": "", "Last Name": "", "SSN": "", "Relationship": "", "Age": "" }],
     }));
+  };
+
+  const handleChatSubmit = async (e) => {
+    e.preventDefault();
+    if (!chatInput.trim() || !sessionId) {
+      setChatHistory((prev) => [...prev, { role: 'assistant', content: 'Session ID missing or question is empty.' }]);
+      return;
+    }
+    setChatHistory((prev) => [...prev, { role: 'user', content: chatInput }]);
+    setChatInput("");
+    try {
+      console.log('Sending chat with sessionId:', sessionId, 'question:', chatInput);
+      const response = await fetch('http://localhost:8080/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Session-Id': sessionId,
+        },
+        body: JSON.stringify({ question: chatInput }),
+      });
+      console.log('Chat response:', response);
+      if (!response.ok) {
+        const errorText = await response.text();
+        setChatHistory((prev) => [...prev, { role: 'assistant', content: `Error: ${errorText}` }]);
+        return;
+      }
+      const data = await response.json();
+      setChatHistory((prev) => [...prev, { role: 'assistant', content: data.answer }]);
+    } catch (err) {
+      setChatHistory((prev) => [...prev, { role: 'assistant', content: 'Error getting answer.' }]);
+      console.error('Chat error:', err);
+    }
   };
 
   return (
@@ -298,6 +336,30 @@ function App() {
           </Tab>
         </Tabs>
       </div>
+      {isUploaded && (
+        <div className="container mt-5">
+          <h3>Document Chatbot</h3>
+          <div style={{ border: '1px solid #ccc', borderRadius: 8, padding: 16, minHeight: 200, maxHeight: 300, overflowY: 'auto', background: '#fafafa' }}>
+            {chatHistory.map((msg, idx) => (
+              <div key={idx} style={{ textAlign: msg.role === 'user' ? 'right' : 'left', margin: '8px 0' }}>
+                <span style={{ fontWeight: msg.role === 'user' ? 'bold' : 'normal' }}>{msg.role === 'user' ? 'You' : 'Assistant'}: </span>
+                <span>{msg.content}</span>
+              </div>
+            ))}
+            <div ref={chatEndRef} />
+          </div>
+          <form onSubmit={handleChatSubmit} className="d-flex mt-2">
+            <Form.Control
+              type="text"
+              value={chatInput}
+              onChange={e => setChatInput(e.target.value)}
+              placeholder="Ask a question about your document..."
+              className="mr-2"
+            />
+            <Button type="submit" variant="primary">Send</Button>
+          </form>
+        </div>
+      )}
       <footer className="text-center mt-5">
         <p>&copy; 2025 Health Care Portal. All rights reserved.</p>
       </footer>
