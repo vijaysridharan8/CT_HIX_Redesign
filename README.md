@@ -1,28 +1,184 @@
-## Usage
+# Health Care Portal
 
-```bash
-$ npm install # or pnpm install or yarn install
+A modern web application for managing health documents and patient information. This application provides a user-friendly interface for uploading health documents, managing personal information, and interacting with document content through a chatbot interface.
+
+## Technology Stack
+
+### Frontend
+- **React**: Core frontend library
+- **Vite**: Build tool and development server
+- **React Bootstrap**: UI component library for responsive design
+- **React Router DOM**: For handling navigation
+- **TypeScript**: For type safety (configured but optional)
+
+### Backend
+- **Java 17**
+- **Spring Boot 3.5.4**: Backend framework
+- **Apache Tika**: For document parsing
+- **JSON Library**: For JSON processing
+- **JUnit**: For testing
+
+## Features
+
+1. **Document Upload**
+   - Support for multiple file formats (.pdf, .doc, .docx, .jpg, .png)
+   - Real-time upload status
+   - Document processing feedback
+
+2. **Information Management**
+   - Personal Information
+   - Spouse Information
+   - Dependents Management
+   - Address Information
+   - Income & Deductions
+
+3. **Interactive Chatbot**
+   - Document-based Q&A
+   - Session management
+   - Real-time chat interface
+
+## Project Structure
+
+```
+health-app/
+├── src/                      # Frontend source files
+│   ├── components/          # React components
+│   ├── assets/             # Static assets
+│   ├── App.tsx            # Main application component
+│   └── main.tsx           # Application entry point
+│
+├── backend/                 # Backend source files
+│   ├── src/main/java/
+│   │   └── com/healthapp/backend/
+│   │       ├── BackendApplication.java    # Main Spring Boot application
+│   │       ├── DocumentController.java    # REST controller
+│   │       └── WebConfig.java            # CORS configuration
+│   │
+│   └── src/test/           # Backend tests
+│
+├── public/                 # Public assets
+└── package.json           # Frontend dependencies and scripts
 ```
 
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
+## Prerequisites
+
+- Node.js (v16 or higher)
+- Java Development Kit (JDK) 17
+- Gradle
+- Git
+
+## Setup Instructions
+
+### Frontend Setup
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd health-app
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+   The frontend will be available at `http://localhost:5173`
+
+### Backend Setup
+
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+
+2. Build the project:
+   ```powershell
+   gradlew.bat build
+   ```
+
+3. Run the application:
+   ```powershell
+   gradlew.bat bootRun
+   ```
+   The backend API will be available at `http://localhost:8080`
+
+## Development
+
+### Frontend Development
+- The frontend uses Vite for fast development and hot module replacement
+- React Bootstrap components are used for UI elements
+- State management is handled through React hooks
+- Form handling and validation is built into components
+
+### Backend Development
+- RESTful API endpoints in `DocumentController.java`
+- CORS configuration in `WebConfig.java`
+- Document processing using Apache Tika
+- Unit tests using JUnit
 
 ## Available Scripts
 
-In the project directory, you can run:
+Frontend:
+- `npm run dev`: Start development server
+- `npm run build`: Build for production
+- `npm run preview`: Preview production build
 
-### `npm run dev`
+Backend:
+- `gradlew.bat build`: Build the project
+- `gradlew.bat test`: Run tests
+- `gradlew.bat bootRun`: Run the application
 
-Runs the app in the development mode.<br>
-Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
+## API Endpoints
 
-### `npm run build`
+- `POST /api/upload`: Upload and process documents
+- `POST /api/chat`: Interact with the document chatbot
 
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Solid in production mode and optimizes the build for the best performance.
+## Configuration
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+### Frontend
+- Environment variables can be set in `.env` files
+- Vite configuration in `vite.config.ts`
 
-## Deployment
+### Backend
+- Application properties in `src/main/resources/application.properties`
+- CORS configuration in `WebConfig.java`
 
-Learn more about deploying your application with the [documentations](https://vite.dev/guide/static-deploy.html)
+## Testing
+
+### Frontend
+- Component testing setup available
+- Run tests with `npm test`
+
+### Backend
+- JUnit tests in `src/test/`
+- Run tests with `./gradlew test`
+
+## Production Deployment
+
+1. Build the frontend:
+   ```bash
+   npm run build
+   ```
+
+2. Build the backend:
+   ```powershell
+   gradlew.bat build
+   ```
+
+3. Deploy the generated artifacts to your hosting environment
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details
